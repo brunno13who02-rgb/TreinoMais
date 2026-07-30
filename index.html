@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowFit | Ultra Pro</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --primary: #c1ff72;
+            --bg: #0a0a0c;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-main: #ffffff;
+            --text-dim: #a1a1aa;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --danger: #e74c3c;
+            --success: #2ecc71;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(193, 255, 114, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(193, 255, 114, 0.05) 0%, transparent 40%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 90px;
+        }
+
+        header {
+            padding: 30px 20px 10px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-weight: 800;
+            font-size: 26px;
+            letter-spacing: -1px;
+            margin: 0;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: auto;
+            padding: 15px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 { 
+            font-size: 18px; 
+            margin-top: 0;
+            margin-bottom: 20px; 
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-group { margin-bottom: 16px; }
+        
+        input, select {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            color: #fff;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        optgroup {
+            background: #18181b;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        option {
+            background: #0a0a0c;
+            color: #fff;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(193, 255, 114, 0.05);
+        }
+
+        /* Chips para Seleção Múltipla de Grupos Musculares */
+        .chips-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .chip-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-dim);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chip-item:active { transform: scale(0.95); }
+
+        .chip-item.active {
+            background: var(--primary);
+            color: #000;
+            border-color: var(--primary);
+            font-weight: 700;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            border: none;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button:active { transform: scale(0.96); }
+
+        .btn-primary { background: var(--primary); color: #000; padding: 16px; width: 100%; margin-top: 15px; }
+        .btn-secondary { background: rgba(255,255,255,0.08); color: #fff; padding: 12px; margin-top: 10px; width: 100%; }
+        .btn-danger { background: rgba(231, 76, 60, 0.15); color: var(--danger); margin-top: 12px; padding: 12px; width: 100%; }
+        .btn-success { background: rgba(46, 204, 113, 0.2); color: var(--success); padding: 12px; width: 100%; }
+
+        .exercise-item {
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s;
+        }
+
+        .exercise-item.done {
+            border-left-color: var(--text-dim);
+            opacity: 0.4;
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .exercise-name { font-weight: 600; display: block; }
+
+        .timer-display { text-align: center; padding: 15px 0; }
+        .timer-display span {
+            font-size: 48px;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            color: var(--primary);
+            text-shadow: 0 0 15px rgba(193, 255, 114, 0.3);
+        }
+        .timer-controls { display: flex; gap: 10px; justify-content: center; margin-top: 5px;}
+        .timer-controls button { width: 40px; height: 40px; border-radius: 50%; padding: 0; }
+
+        .hidden { display: none !important; }
+
+        #listaTemp {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        #listaTemp li {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #listaTemp li span { cursor: pointer; color: var(--danger); display: flex; align-items: center; }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 12, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dim);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            gap: 4px;
+            background: none;
+            border: none;
+        }
+
+        .nav-item.active { color: var(--primary); }
+
+        .list-entry {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .list-entry .meta { font-size: 12px; color: var(--text-dim); }
+
+        .checkbox-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            padding: 0;
+        }
+        .checkbox-btn.checked {
+            background: var(--primary);
+            color: #000;
+            border-color: var(--primary);
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 15px;
+            color: var(--text-dim);
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>GLOWFIT</h1>
+</header>
+
+<div class="container">
+
+    <!-- ABA 1: TREINAR (HOME) -->
+    <div id="tab-treinar" class="tab-content">
+        <div class="card">
+            <h2><i data-lucide="dumbbell"></i> Treino de Hoje</h2>
+            <select id="selectTreino" class="input-group"></select>
+            
+            <button class="btn-primary" onclick="iniciarTreino()">
+                <i data-lucide="play"></i> Iniciar Agora
+            </button>
+            
+            <button class="btn-danger" onclick="excluirTreino()">
+                <i data-lucide="trash-2"></i> Excluir Treino
+            </button>
+        </div>
+    </div>
+
+    <!-- ABA 2: CRIAR TREINO -->
+    <div id="tab-criar" class="tab-content hidden">
+        <div class="card">
+            <h2><i data-lucide="plus-circle"></i> Novo Treino</h2>
+            <input id="nomeTreino" placeholder="Ex: Peito + Ombro" class="input-group">
+            
+            <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 18px; margin-bottom: 15px;">
+                <label style="font-size: 12px; color: var(--text-dim); display:block; margin-bottom:8px;">
+                    Grupamentos Musculares (Selecione um ou mais)
+                </label>
+                
+                <!-- Seleção Múltipla por Chips -->
+                <div class="chips-container" id="chipsGruposCriar">
+                    <span class="chip-item active" onclick="toggleGrupoCriar(this, 'Peito')">Peito</span>
+                    <span class="chip-item" onclick="toggleGrupoCriar(this, 'Costas')">Costas</span>
+                    <span class="chip-item" onclick="toggleGrupoCriar(this, 'Pernas')">Pernas</span>
+                    <span class="chip-item" onclick="toggleGrupoCriar(this, 'Braços')">Braços</span>
+                    <span class="chip-item" onclick="toggleGrupoCriar(this, 'Ombros')">Ombros</span>
+                    <span class="chip-item" onclick="toggleGrupoCriar(this, 'Core')">Core</span>
+                </div>
+
+                <label style="font-size: 12px; color: var(--text-dim); display:block; margin-bottom:4px;">Exercício</label>
+                <select id="selectExercicioCriar" class="input-group"></select>
+
+                <div class="grid">
+                    <div>
+                        <small style="color:var(--text-dim); display:block; margin-bottom:4px;">Sets</small>
+                        <input id="series" type="number" placeholder="0">
+                    </div>
+                    <div>
+                        <small style="color:var(--text-dim); display:block; margin-bottom:4px;">Reps</small>
+                        <input id="reps" type="number" placeholder="0">
+                    </div>
+                    <div>
+                        <small style="color:var(--text-dim); display:block; margin-bottom:4px;">Kg</small>
+                        <input id="carga" type="number" placeholder="0">
+                    </div>
+                </div>
+                <button class="btn-secondary" onclick="addExercicioNoTreino()">
+                    <i data-lucide="plus"></i> Adicionar ao Treino
+                </button>
+            </div>
+
+            <ul id="listaTemp"></ul>
+
+            <button class="btn-primary" onclick="salvarTreinoCompleto()">
+                <i data-lucide="save"></i> Salvar Treino Completo
+            </button>
+        </div>
+    </div>
+
+    <!-- ABA 3: BANCO DE EXERCÍCIOS -->
+    <div id="tab-banco" class="tab-content hidden">
+        <div class="card">
+            <h2><i data-lucide="library"></i> Banco de Exercícios</h2>
+            <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 18px; margin-bottom: 15px;">
+                <input id="novoExercicioNome" placeholder="Nome do novo exercício" class="input-group">
+                <select id="novoExercicioGrupo" class="input-group">
+                    <option value="Peito">Peito</option>
+                    <option value="Costas">Costas</option>
+                    <option value="Pernas">Pernas</option>
+                    <option value="Braços">Braços</option>
+                    <option value="Ombros">Ombros</option>
+                    <option value="Core">Core</option>
+                </select>
+                <button class="btn-success" onclick="cadastrarExercicioNoBanco()">
+                    <i data-lucide="plus"></i> Cadastrar no Banco
+                </button>
+            </div>
+
+            <select id="filtroVerBanco" class="input-group" onchange="renderizarBancoExercicios()">
+                <option value="Todos">Ver Todos os Grupos</option>
+                <option value="Peito">Peito</option>
+                <option value="Costas">Costas</option>
+                <option value="Pernas">Pernas</option>
+                <option value="Braços">Braços</option>
+                <option value="Ombros">Ombros</option>
+                <option value="Core">Core</option>
+            </select>
+
+            <div id="listaBancoExercicios"></div>
+        </div>
+    </div>
+
+    <!-- ABA 4: HISTÓRICO & CONFIGS -->
+    <div id="tab-historico" class="tab-content hidden">
+        <div class="card">
+            <h2><i data-lucide="history"></i> Histórico de Treinos</h2>
+            <div id="listaHistorico"></div>
+        </div>
+        <div class="card">
+            <h2><i data-lucide="settings"></i> Dados do App</h2>
+            <div class="grid" style="grid-template-columns: 1fr 1fr;">
+                <button class="btn-secondary" onclick="exportarDados()"><i data-lucide="download"></i> Backup</button>
+                <button class="btn-secondary" onclick="document.getElementById('importFile').click()"><i data-lucide="upload"></i> Restaurar</button>
+            </div>
+            <input type="file" id="importFile" class="hidden" onchange="importarDados(event)">
+        </div>
+    </div>
+
+    <!-- TELA INDEPENDENTE: TREINANDO AGORA -->
+    <div id="paginaTreino" class="hidden">
+        <div class="card">
+            <div style="display: flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h2 id="tituloTreino" style="color: var(--primary); font-size: 24px; margin:0;"></h2>
+                <div id="descansoAviso" style="font-size:12px; color:var(--primary); font-weight:700;" class="hidden">💥 DESCANSO!</div>
+            </div>
+            
+            <div class="timer-display" style="background: rgba(0,0,0,0.15); border-radius:18px; margin-bottom:15px;">
+                <span id="tempo">00:00</span>
+                <div class="timer-controls">
+                    <button class="btn-secondary" onclick="startTimer()"><i data-lucide="play"></i></button>
+                    <button class="btn-secondary" onclick="pauseTimer()"><i data-lucide="pause"></i></button>
+                    <button class="btn-secondary" onclick="resetTimer()"><i data-lucide="rotate-ccw"></i></button>
+                </div>
+                <div style="margin-top: 10px; display:flex; justify-content:center; gap:8px;">
+                    <button class="btn-secondary" onclick="iniciarDescanso()" style="font-size:12px; border-radius:8px; padding:4px 12px; height:auto; width:auto;">
+                        <i data-lucide="timer"></i> Descanso (60s)
+                    </button>
+                </div>
+            </div>
+
+            <div id="listaExerciciosExecucao"></div>
+
+            <button class="btn-primary" onclick="finalizarTreinoCompleto()" style="background: var(--primary); color:#000;">
+                <i data-lucide="check-check"></i> Finalizar Treino
+            </button>
+            <div class="back-link" onclick="cancelarTreinoAtuais()">Cancelar e Sair</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- BOTTOM NAVIGATION -->
+<nav class="bottom-nav" id="mainNav">
+    <button class="nav-item active" onclick="switchTab('treinar')">
+        <i data-lucide="dumbbell"></i>Treinar
+    </button>
+    <button class="nav-item" onclick="switchTab('criar')">
+        <i data-lucide="plus-circle"></i>Criar Treino
+    </button>
+    <button class="nav-item" onclick="switchTab('banco')">
+        <i data-lucide="library"></i>Exercícios
+    </button>
+    <button class="nav-item" onclick="switchTab('historico')">
+        <i data-lucide="history"></i>Histórico
+    </button>
+</nav>
+
+<script>
+    // Banco de Exercícios Inicial
+    const bancoPadrao = {
+        "Peito": ["Supino Reto", "Supino Inclinado", "Supino Declinado", "Crucifixo", "Crossover", "Voador"],
+        "Costas": ["Puxada Alta", "Remada Curvada", "Remada Baixa", "Pull Down", "Remada Cavalo"],
+        "Pernas": ["Agachamento Livre", "Leg Press 45", "Cadeira Extensora", "Mesa Flexora", "Panturrilha em pé", "Gêmeos", "Cadeira Flexora"],
+        "Braços": ["Rosca Direta", "Rosca Scott", "Rosca banco 30°", "Rosca Martelo", "Tríceps Testa", "Triceps pulley", "Tríceps Francês"],
+        "Ombros": ["Desenvolvimento", "Elevação Lateral", "Elevação Frontal", "Encolhimento trapézio"],
+        "Core": ["Abdominal Remador", "Prancha Isométrica", "Abdominal Infra"]
+    };
+
+    let banco = JSON.parse(localStorage.getItem("glowfit_banco")) || bancoPadrao;
+    let treinos = JSON.parse(localStorage.getItem("glowfit_treinos")) || {};
+    let historico = JSON.parse(localStorage.getItem("glowfit_historico")) || [];
+    
+    // Grupos Ativos para Seleção na Criação de Treino
+    let gruposSelecionadosCriar = ["Peito"];
+    
+    let tempTreinoCriando = [];
+    let segundos = 0;
+    let timer = null;
+    let wakeLock = null;
+
+    // Inicialização
+    lucide.createIcons();
+    carregarSelectTreinosHome();
+    filtrarExerciciosCriar();
+    renderizarBancoExercicios();
+    renderizarHistorico();
+
+    // Sistema de Abas
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+        event.currentTarget.classList.add('active');
+    }
+
+    // Toggle para Múltiplos Grupos Musculares
+    function toggleGrupoCriar(el, grupo) {
+        if (gruposSelecionadosCriar.includes(grupo)) {
+            if (gruposSelecionadosCriar.length === 1) return; // Mantém ao menos 1 grupo ativo
+            gruposSelecionadosCriar = gruposSelecionadosCriar.filter(g => g !== grupo);
+            el.classList.remove('active');
+        } else {
+            gruposSelecionadosCriar.push(grupo);
+            el.classList.add('active');
+        }
+        filtrarExerciciosCriar();
+    }
+
+    // Filtra e agrupa exercícios conforme grupos selecionados
+    function filtrarExerciciosCriar() {
+        const selectEx = document.getElementById("selectExercicioCriar");
+        selectEx.innerHTML = "";
+        
+        gruposSelecionadosCriar.forEach(grupo => {
+            if (banco[grupo] && banco[grupo].length > 0) {
+                const optGroup = document.createElement("optgroup");
+                optGroup.label = grupo;
+
+                banco[grupo].forEach(ex => {
+                    const opt = document.createElement("option");
+                    opt.value = ex;
+                    opt.textContent = ex;
+                    optGroup.appendChild(opt);
+                });
+
+                selectEx.appendChild(optGroup);
+            }
+        });
+    }
+
+    // Banco de Exercícios - Operações
+    function cadastrarExercicioNoBanco() {
+        const nome = document.getElementById("novoExercicioNome").value.trim();
+        const grupo = document.getElementById("novoExercicioGrupo").value;
+        if(!nome) return alert("Digite o nome do exercício");
+
+        if(!banco[grupo].includes(nome)) {
+            banco[grupo].push(nome);
+            localStorage.setItem("glowfit_banco", JSON.stringify(banco));
+            document.getElementById("novoExercicioNome").value = "";
+            renderizarBancoExercicios();
+            filtrarExerciciosCriar();
+            alert("Exercício adicionado ao banco!");
+        } else {
+            alert("Esse exercício já existe.");
+        }
+    }
+
+    function renderizarBancoExercicios() {
+        const filtro = document.getElementById("filtroVerBanco").value;
+        const container = document.getElementById("listaBancoExercicios");
+        container.innerHTML = "";
+
+        Object.keys(banco).forEach(grupo => {
+            if (filtro === "Todos" || filtro === grupo) {
+                banco[grupo].forEach(ex => {
+                    container.innerHTML += `
+                        <div class="list-entry">
+                            <div>
+                                <strong style="font-size:14px;">${ex}</strong><br>
+                                <span class="meta">${grupo}</span>
+                            </div>
+                            <span onclick="deletarDoBanco('${grupo}', '${ex}')" style="color:var(--danger); cursor:pointer;"><i data-lucide="trash" style="width:16px;"></i></span>
+                        </div>
+                    `;
+                });
+            }
+        });
+        lucide.createIcons();
+    }
+
+    function deletarDoBanco(grupo, nome) {
+        if(!confirm(`Excluir "${nome}" do banco?`)) return;
+        banco[grupo] = banco[grupo].filter(ex => ex !== nome);
+        localStorage.setItem("glowfit_banco", JSON.stringify(banco));
+        renderizarBancoExercicios();
+        filtrarExerciciosCriar();
+    }
+
+    // Criação de Treinos
+    function addExercicioNoTreino() {
+        const exName = document.getElementById("selectExercicioCriar").value;
+        if(!exName) return alert("Cadastre ou selecione um exercício primeiro.");
+
+        const exObj = {
+            exercicio: exName,
+            series: document.getElementById("series").value || 0,
+            reps: document.getElementById("reps").value || 0,
+            carga: document.getElementById("carga").value || 0
+        };
+
+        tempTreinoCriando.push(exObj);
+        atualizarChipsCriacao();
+
+        document.getElementById("series").value = "";
+        document.getElementById("reps").value = "";
+        document.getElementById("carga").value = "";
+    }
+
+    function atualizarChipsCriacao() {
+        const lista = document.getElementById("listaTemp");
+        lista.innerHTML = "";
+        tempTreinoCriando.forEach((ex, idx) => {
+            const li = document.createElement("li");
+            li.innerHTML = `${ex.exercicio} <span onclick="removerExercicioTemp(${idx})"><i data-lucide="x-circle" style="width:14px;"></i></span>`;
+            lista.appendChild(li);
+        });
+        lucide.createIcons();
+    }
+
+    function removerExercicioTemp(idx) {
+        tempTreinoCriando.splice(idx, 1);
+        atualizarChipsCriacao();
+    }
+
+    function salvarTreinoCompleto() {
+        const nome = document.getElementById("nomeTreino").value.trim();
+        if(!nome || tempTreinoCriando.length === 0) return alert("Dê um nome ao treino e adicione exercícios.");
+
+        treinos[nome] = JSON.parse(JSON.stringify(tempTreinoCriando));
+        localStorage.setItem("glowfit_treinos", JSON.stringify(treinos));
+
+        tempTreinoCriando = [];
+        document.getElementById("listaTemp").innerHTML = "";
+        document.getElementById("nomeTreino").value = "";
+
+        carregarSelectTreinosHome();
+        switchTab('treinar');
+        alert("Treino completo salvo com sucesso!");
+    }
+
+    function carregarSelectTreinosHome() {
+        const select = document.getElementById("selectTreino");
+        select.innerHTML = `<option value="">Selecione o treino de hoje...</option>`;
+        Object.keys(treinos).forEach(t => {
+            select.innerHTML += `<option value="${t}">${t}</option>`;
+        });
+    }
+
+    function excluirTreino() {
+        const treino = document.getElementById("selectTreino").value;
+        if(!treino || !confirm(`Deseja deletar o treino "${treino}"?`)) return;
+        delete treinos[treino];
+        localStorage.setItem("glowfit_treinos", JSON.stringify(treinos));
+        carregarSelectTreinosHome();
+    }
+
+    // MÓDULO DE EXECUÇÃO DE TREINO
+    async function iniciarTreino() {
+        const treino = document.getElementById("selectTreino").value;
+        if(!treino) return;
+
+        if ('wakeLock' in navigator) {
+            try { wakeLock = await navigator.wakeLock.request('screen'); } catch (err) {}
+        }
+
+        document.getElementById("tab-treinar").classList.add("hidden");
+        document.getElementById("mainNav").classList.add("hidden");
+        document.getElementById("paginaTreino").classList.remove("hidden");
+
+        document.getElementById("tituloTreino").innerText = treino;
+        
+        const container = document.getElementById("listaExerciciosExecucao");
+        container.innerHTML = "";
+
+        treinos[treino].forEach((ex, i) => {
+            container.innerHTML += `
+            <div class="exercise-item" id="ex-item-${i}">
+                <div class="exercise-header">
+                    <span class="exercise-name">${ex.exercicio}</span>
+                    <button class="checkbox-btn" onclick="toggleConcluido(${i})"><i data-lucide="check" style="width:16px;"></i></button>
+                </div>
+                <div class="grid">
+                    <div><small style="color:var(--text-dim)">Sets</small><input type="number" value="${ex.series}" oninput="updateRealtime('${treino}',${i},'series',this.value)"></div>
+                    <div><small style="color:var(--text-dim)">Reps</small><input type="number" value="${ex.reps}" oninput="updateRealtime('${treino}',${i},'reps',this.value)"></div>
+                    <div><small style="color:var(--text-dim)">Kg</small><input type="number" value="${ex.carga}" oninput="updateRealtime('${treino}',${i},'carga',this.value)"></div>
+                </div>
+            </div>`;
+        });
+        lucide.createIcons();
+        startTimer();
+    }
+
+    function toggleConcluido(i) {
+        const item = document.getElementById(`ex-item-${i}`);
+        const btn = item.querySelector('.checkbox-btn');
+        item.classList.toggle('done');
+        btn.classList.toggle('checked');
+    }
+
+    function updateRealtime(treino, i, campo, valor) {
+        treinos[treino][i][campo] = valor;
+        localStorage.setItem("glowfit_treinos", JSON.stringify(treinos));
+    }
+
+    // TIMER DE DESCANSO AUTOMÁTICO
+    function iniciarDescanso() {
+        const aviso = document.getElementById("descansoAviso");
+        aviso.classList.remove("hidden");
+        
+        let tempoDescanso = 60;
+        const totalSegundosOriginais = segundos;
+        pauseTimer();
+
+        let intervaloDescanso = setInterval(() => {
+            tempoDescanso--;
+            document.getElementById("tempo").innerText = `00:${String(tempoDescanso).padStart(2,"0")}`;
+            
+            if(tempoDescanso <= 0) {
+                clearInterval(intervaloDescanso);
+                aviso.classList.add("hidden");
+                segundos = totalSegundosOriginais;
+                startTimer();
+                if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+            }
+        }, 1000);
+    }
+
+    function finalizarTreinoCompleto() {
+        pauseTimer();
+        const nomeTreino = document.getElementById("tituloTreino").innerText;
+        const duracao = document.getElementById("tempo").innerText;
+        
+        const dataAtual = new Date();
+        const dataFormatada = dataAtual.toLocaleDateString('pt-BR') + " às " + dataAtual.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+
+        historico.unshift({ treino: nomeTreino, data: dataFormatada, tempo: duracao });
+        localStorage.setItem("glowfit_historico", JSON.stringify(historico));
+
+        renderizarHistorico();
+        sairDaTelaDeExecucao();
+        alert("Treino concluído e registrado no histórico!");
+    }
+
+    function cancelarTreinoAtuais() {
+        if(confirm("Deseja mesmo cancelar e sair? O progresso de hoje não será salvo.")) {
+            sairDaTelaDeExecucao();
+        }
+    }
+
+    function sairDaTelaDeExecucao() {
+        if(wakeLock) { wakeLock.release(); wakeLock = null; }
+        document.getElementById("paginaTreino").classList.add("hidden");
+        document.getElementById("tab-treinar").classList.remove("hidden");
+        document.getElementById("mainNav").classList.remove("hidden");
+        resetTimer();
+    }
+
+    function renderizarHistorico() {
+        const container = document.getElementById("listaHistorico");
+        container.innerHTML = historico.length === 0 ? `<p style="color:var(--text-dim); font-size:14px;">Nenhum treino concluído ainda.</p>` : "";
+        
+        historico.forEach(item => {
+            container.innerHTML += `
+                <div class="list-entry">
+                    <div>
+                        <strong>${item.treino}</strong><br>
+                        <span class="meta">${item.data}</span>
+                    </div>
+                    <span style="font-weight:700; color:var(--primary); font-size:14px;"><i data-lucide="timer" style="width:14px; display:inline; margin-right:4px;"></i>${item.tempo}</span>
+                </div>
+            `;
+        });
+        lucide.createIcons();
+    }
+
+    // BACKUP & RESTAURAÇÃO
+    function exportarDados() {
+        const pacote = { banco, treinos, historico };
+        const blob = new Blob([JSON.stringify(pacote)], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `glowfit_backup.json`;
+        a.click();
+    }
+
+    function importarDados(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            try {
+                const dados = JSON.parse(evt.target.result);
+                if(dados.banco && dados.treinos && dados.historico) {
+                    banco = dados.banco;
+                    treinos = dados.treinos;
+                    historico = dados.historico;
+                    localStorage.setItem("glowfit_banco", JSON.stringify(banco));
+                    localStorage.setItem("glowfit_treinos", JSON.stringify(treinos));
+                    localStorage.setItem("glowfit_historico", JSON.stringify(historico));
+                    
+                    carregarSelectTreinosHome();
+                    filtrarExerciciosCriar();
+                    renderizarBancoExercicios();
+                    renderizarHistorico();
+                    alert("Dados restaurados com sucesso!");
+                } else {
+                    alert("Arquivo de backup inválido.");
+                }
+            } catch(err) { alert("Erro ao ler arquivo."); }
+        };
+        reader.readAsText(file);
+    }
+
+    /* CRONÔMETRO DE TREINO */
+    function startTimer() {
+        if (timer) return;
+        timer = setInterval(() => {
+            segundos++;
+            document.getElementById("tempo").innerText =
+                String(Math.floor(segundos/60)).padStart(2,"0") + ":" +
+                String(segundos%60).padStart(2,"0");
+        }, 1000);
+    }
+    function pauseTimer() { clearInterval(timer); timer = null; }
+    function resetTimer() { pauseTimer(); segundos = 0; document.getElementById("tempo").innerText = "00:00"; }
+</script>
+
+</body>
+</html>
